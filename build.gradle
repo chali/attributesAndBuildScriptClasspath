@@ -3,6 +3,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        components {
+            all { details -> 
+                attributes {
+                    attribute Attribute.of('org.netflix.internal.statusScheme', String), details.statusScheme.join(',')
+                } 
+            }
+        }
         classpath 'junit:junit:4.12'
     }
 }
@@ -14,11 +21,13 @@ repositories {
 }
 
 dependencies {
-    components {
-        all { details -> 
-            println "Hello from ${details.id}" 
+    compile 'junit:junit:4.12'
+}
+
+task printAttributes {
+    doFirst {
+        configurations.compile.incoming.resolutionResult.allDependencies.each {
+            println "${it.selected.id} ${it.selected.variant.attributes}"
         }
     }
-
-    compile 'junit:junit:4.12'
 }
